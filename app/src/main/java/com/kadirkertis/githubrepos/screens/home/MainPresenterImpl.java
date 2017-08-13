@@ -76,9 +76,7 @@ public class MainPresenterImpl implements MainPresenter {
                 .retryWhen(failures -> failures
                         .zipWith(Observable.range(1, ATTEMPTS), this::exponentialBackOff)
                         .flatMap(x -> x))
-                .subscribe(githubRepos -> {
-                            view.displayReposList(githubRepos);
-                        },
+                .subscribe(view::displayReposList,
 
                         error -> {
                             view.displayMessage("Error Loading Repo");
