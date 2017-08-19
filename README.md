@@ -6,9 +6,9 @@ RxJava among other open source libraries.
 Implemented custom suggestions using AutoCompleteTextView and
 Rx java for Github API.
 
-![Debug drawer](github_repos.gif)
-
 Includes local unit tests and UI tests using espresso.
+
+![Debug drawer](github_repos.gif)
 
 # Libraries
 * Dagger2
