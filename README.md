@@ -8,7 +8,7 @@ Rx java for Github API.
 
 Includes local unit tests and UI tests using espresso.
 
-![Debug drawer](github_repos.gif)
+![repos](githubrepos.gif)
 
 # Libraries
 * Dagger2
