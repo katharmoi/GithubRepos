@@ -2,16 +2,15 @@ package com.kadirkertis.githubrepos.screens.home;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +30,6 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.reactivex.Observable;
-import timber.log.Timber;
 
 /**
  * Created by Kadir Kertis on 3.8.2017.
@@ -49,6 +47,7 @@ public class MainViewImpl extends FrameLayout implements MainView {
     private CircleImageView avatarView;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private TextView emptyTextView;
+    private Activity activity;
 
     private final ProgressDialog progressDialog = new ProgressDialog(getContext());
     private final ProgressBar progressAutoComplete;
@@ -57,6 +56,7 @@ public class MainViewImpl extends FrameLayout implements MainView {
     public MainViewImpl(Activity activity,Picasso picasso) {
         super(activity);
         inflate(getContext(), R.layout.activity_main, this);
+        this.activity = activity;
         this.picasso = picasso;
         userNameSearchView = (AutoCompleteTextView) findViewById(R.id.txt_search_box);
         userAdapter = new UsersAdapter(getContext(), R.layout.list_item_user, new ArrayList<>(0));
@@ -94,12 +94,7 @@ public class MainViewImpl extends FrameLayout implements MainView {
     @Override
     public void displayUserSuggestion(List<User> userList) {
         userAdapter.clear();
-        for (User user : userList) {
-            Timber.d(user.getLogin());
-        }
         userAdapter.addAll(userList);
-        userAdapter.notifyDataSetChanged();
-        userNameSearchView.setAdapter(userAdapter);
     }
 
     @Override
@@ -146,5 +141,15 @@ public class MainViewImpl extends FrameLayout implements MainView {
     @Override
     public Observable<AdapterViewItemClickEvent> observeUserClicked() {
         return RxAutoCompleteTextView.itemClickEvents(userNameSearchView);
+    }
+
+    @Override
+    public void hideKeyboard() {
+
+        View view = activity.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+        }
     }
 }

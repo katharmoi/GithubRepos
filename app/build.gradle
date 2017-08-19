@@ -24,6 +24,7 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
+        multiDexEnabled = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -57,9 +58,14 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     //Espresso
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
+    debugCompile 'com.android.support.test.espresso.idling:idling-concurrent:3.0.0'
+    debugCompile ('com.jakewharton.espresso:okhttp3-idling-resource:1.0.0') {
+        exclude module: 'support-annotations'
+    }
+
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:3.0.0'
+
+
 
     //Support Libs
     compile 'com.android.support:appcompat-v7:25.3.1'
@@ -104,12 +110,14 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.google.truth:truth:0.34'
 
-    //OkHttp Idling Resource
-    androidTestCompile 'com.jakewharton.espresso:okhttp3-idling-resource:1.0.0'
+
 
     //LeakCanary
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.2'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.2'
+
+    //Guava
+    compile 'com.google.guava:guava:23.0-android'
 
     compile 'de.hdodenhof:circleimageview:2.1.0'
 }

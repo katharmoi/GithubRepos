@@ -34,6 +34,8 @@ public interface MainView {
 
     void displayUserNameOnToolbar(String userName);
 
+    void hideKeyboard();
+
     String getUserName();
 
     void displayResponseAsToast(String result);

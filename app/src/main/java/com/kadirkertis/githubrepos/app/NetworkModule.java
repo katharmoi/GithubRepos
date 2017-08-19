@@ -1,6 +1,7 @@
 package com.kadirkertis.githubrepos.app;
 
 import android.content.Context;
+import android.support.test.espresso.IdlingResource;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,6 +9,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.jakewharton.picasso.OkHttp3Downloader;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.kadirkertis.githubrepos.BuildConfig;
+import com.kadirkertis.githubrepos.IdlingResources;
 import com.kadirkertis.githubrepos.githubService.GithubApi;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
@@ -31,9 +33,13 @@ public class NetworkModule {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
 
-        return new OkHttpClient.Builder()
+        OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor)
                 .build();
+        if(BuildConfig.DEBUG){
+            IdlingResources.registerOkHttp(client);
+        }
+        return client;
     }
 
     @AppScope

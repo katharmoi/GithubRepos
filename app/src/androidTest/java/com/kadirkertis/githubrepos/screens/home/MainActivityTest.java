@@ -1,36 +1,30 @@
 package com.kadirkertis.githubrepos.screens.home;
 
-import android.app.ProgressDialog;
-import android.graphics.drawable.ColorDrawable;
-import android.support.test.espresso.Espresso;
-import android.support.test.espresso.IdlingResource;
-import android.support.test.espresso.UiController;
-import android.support.test.espresso.ViewAction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.view.View;
-import android.widget.ProgressBar;
-
-import com.jakewharton.espresso.OkHttp3IdlingResource;
 import com.kadirkertis.githubrepos.R;
-import com.kadirkertis.githubrepos.app.NetworkModule_ProvideOkHttpClientFactory;
+import com.kadirkertis.githubrepos.githubService.model.User;
 
-import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import okhttp3.OkHttpClient;
-
+import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.kadirkertis.githubrepos.screens.GithubReposMatchers.withUserName;
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.isA;
 import static org.hamcrest.core.IsNot.not;
 
 /**
@@ -43,40 +37,69 @@ public class MainActivityTest {
     public ActivityTestRule<MainActivity> activityTestRule =
             new ActivityTestRule<>(MainActivity.class);
 
-    private OkHttpClient client = new OkHttpClient.Builder().build();
-    private IdlingResource idlingResource ;
+
     @Before
-    public void setUp(){
-        idlingResource = OkHttp3IdlingResource.create("okhttp",client);
-        Espresso.registerIdlingResources(idlingResource);
-    }
-    @Test
-    public void clickingLookUpBtnShouldNotStartProgressBarIfUserTextEmpty(){
-        onView(withId(R.id.btn_lookup)).perform(click());
-        onView(withText("Please wait while getting user info")).check(matches(not(isDisplayed())));
+    public void setUp() {
+
     }
 
     @Test
-    public void clickingLookUpBtnShouldNotStartProgressBarIfUserTextLessThan4Chars(){
-        onView(withId(R.id.text_username)).perform(typeText("kat"));
-        onView(withId(R.id.btn_lookup)).perform(click());
-        onView(withText("Please wait while getting user info")).check(matches(not(isDisplayed())));
+    public void enteringLessThan4CharactersShouldNotStartSuggestionsList() {
+        onView(withId(R.id.txt_search_box))
+                .perform(typeText("kat"));
+        onData(allOf(is(instanceOf(User.class))))
+                .inRoot(withDecorView(not(is(activityTestRule.getActivity().getWindow().getDecorView()))))
+                .check(matches(not(isDisplayed())));
     }
 
     @Test
-    public void successfulSearchShouldPopulateRecyclerView(){
-        onView(withId(R.id.text_username)).perform(typeText("katharmoi"));
-        onView(withId(R.id.btn_lookup)).perform(click());
-        onView(withText("Orfo")).check(matches(isDisplayed()));
+    public void entering4OrMoreCharactersShouldStartSuggestionsList() throws InterruptedException {
+        onView(withId(R.id.txt_search_box))
+                .perform(typeText("kath"));
+        onData(allOf(isA(User.class),withUserName(is("kathincolour"))))
+                .inRoot(withDecorView(not(is(activityTestRule.getActivity().getWindow().getDecorView()))))
+                .check(matches(isDisplayed()));
+
+    }
+
+    @Test
+    public void successfulSearchShouldPopulateRecyclerView() {
+        onView(withId(R.id.txt_search_box)).perform(typeText("kath"));
+        onData(allOf(isA(User.class),withUserName(is("kathincolour"))))
+                .inRoot(withDecorView(not(is(activityTestRule.getActivity().getWindow().getDecorView()))))
+                .perform(click());
+
+        onView(withText("kathincolour")).check(matches(isDisplayed()));
+
+    }
+
+    @Test
+    public void successfulSearchShouldLoadUserAvatar() {
+        onView(withId(R.id.txt_search_box)).perform(typeText("kath"));
+
+        onData(allOf(withUserName(is("kathincolour"))))
+                .inRoot(withDecorView(not(is(activityTestRule.getActivity().getWindow().getDecorView()))))
+                .perform(click());
+
+        onView(withText("kathincolour")).check(matches(isDisplayed()));
+
+    }
+
+    @Test
+    public void clickingShouldCloseAutoCompleteWindow(){
+        onView(withId(R.id.txt_search_box)).perform(typeText("kath"));
+        onData(allOf(withUserName(is("kathincolour"))))
+                .inRoot(withDecorView(not(is(activityTestRule.getActivity().getWindow().getDecorView()))))
+                .perform(click());
+//        onView(withText("kath"))
+//                .inRoot(withDecorView(not(is(activityTestRule.getActivity().getWindow().getDecorView()))))
+//                .check(matches(not(isDisplayed())));
     }
 
     @After
-    public void clear(){
-        if(idlingResource !=null){
-            Espresso.unregisterIdlingResources(idlingResource);
-        }
-    }
+    public void tearDown() {
 
+    }
 
 
 }
