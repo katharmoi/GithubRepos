@@ -18,6 +18,8 @@ Includes local unit tests and UI tests using espresso.
 * Retrofit
 * Picasso
 * OkHttp
+* Mockito
+* Espresso
 * LeakCanary
 * Timber
 * Guava
