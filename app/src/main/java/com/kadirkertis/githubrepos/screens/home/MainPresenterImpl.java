@@ -31,6 +31,7 @@ public class MainPresenterImpl implements MainPresenter {
     private PublishProcessor<Integer> paginator;
     private boolean requestActive = false;
     private int currentPage;
+    private int totalCount;
 
     public MainPresenterImpl(MainViewImpl view, GithubRepository githubRepository) {
         this.view = view;
@@ -64,6 +65,7 @@ public class MainPresenterImpl implements MainPresenter {
                         .flatMap(x -> x))
                 .subscribe(
                         result -> {
+                            totalCount = result.getTotalCount();
                             view.displayUserSuggestion(result.getItems());
                         },
                         error -> {
@@ -98,11 +100,11 @@ public class MainPresenterImpl implements MainPresenter {
     }
 
     private Disposable observeUserListEndReached() {
-        //TODO Add No more page check
         return MyBus.getInstance()
                 .asFlowable()
                 .filter(event -> event.getEventName().equals(Constants.Events.END_OF_LIST_REACHED_EVENT))
                 .filter(event -> !requestActive)
+                .filter(event -> (int)event.getEvent() != totalCount)
                 .doOnNext(event ->{
                     view.displayAutoCompleteSpinner(true);
                     currentPage=(int)event.getEvent()/USER_PER_PAGE +1;

@@ -7,15 +7,15 @@ import java.util.List;
  */
 
 public class Users {
-    private  long totalCount;
+    private  int totalCount;
     private boolean incompleteResults;
     private List<User> items;
 
-    public long getTotalCount() {
+    public int getTotalCount() {
         return totalCount;
     }
 
-    public void setTotalCount(long totalCount) {
+    public void setTotalCount(int totalCount) {
         this.totalCount = totalCount;
     }
 
