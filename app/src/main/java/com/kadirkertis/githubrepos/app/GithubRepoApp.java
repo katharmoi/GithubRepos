@@ -16,9 +16,12 @@ public class GithubRepoApp extends Application {
 
     private AppComponent appComponent;
 
+    private MyBus bus;
+
     public static GithubRepoApp get(Activity activity){
         return (GithubRepoApp) activity.getApplication();
     }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -30,9 +33,13 @@ public class GithubRepoApp extends Application {
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .build();
+        bus = MyBus.getInstance();
+
     }
 
     public AppComponent getAppComponent(){
         return appComponent;
     }
+
+    public MyBus getBus(){return bus;}
 }

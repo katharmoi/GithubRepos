@@ -26,6 +26,9 @@ public interface GithubApi {
 
     @GET("search/users")
     public Observable<Users> getUsers(
-            @Query("q") String username
+            @Query("q") String username,
+            @Query("page") int pageNumber,
+            @Query("per_page") int perPage
+
     );
 }

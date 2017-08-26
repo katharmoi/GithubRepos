@@ -17,5 +17,5 @@ public interface GithubRepository {
 
     Observable<List<GithubRepo>> getRepoForUser(String username);
 
-    Observable<Users> getUsersWithName(String name);
+    Observable<Users> getUsersWithName(String name,int page, int perPage);
 }

@@ -15,7 +15,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jakewharton.rxbinding2.widget.AbsListViewScrollEvent;
 import com.jakewharton.rxbinding2.widget.AdapterViewItemClickEvent;
+import com.jakewharton.rxbinding2.widget.RxAbsListView;
 import com.jakewharton.rxbinding2.widget.RxAutoCompleteTextView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jakewharton.rxbinding2.widget.TextViewTextChangeEvent;
@@ -27,9 +29,11 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.reactivex.Observable;
+import io.reactivex.processors.PublishProcessor;
 
 /**
  * Created by Kadir Kertis on 3.8.2017.
@@ -95,6 +99,13 @@ public class MainViewImpl extends FrameLayout implements MainView {
     public void displayUserSuggestion(List<User> userList) {
         userAdapter.clear();
         userAdapter.addAll(userList);
+        userAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void addToUserSuggestionList(List<User> userList) {
+        userAdapter.addAll(userList);
+        userAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -142,6 +153,12 @@ public class MainViewImpl extends FrameLayout implements MainView {
     public Observable<AdapterViewItemClickEvent> observeUserClicked() {
         return RxAutoCompleteTextView.itemClickEvents(userNameSearchView);
     }
+
+    @Override
+    public Observable<Object> observeSuggestionListEnd() {
+        return Observable.empty();
+    }
+
 
     @Override
     public void hideKeyboard() {

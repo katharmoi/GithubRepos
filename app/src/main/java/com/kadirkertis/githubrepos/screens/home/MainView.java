@@ -2,6 +2,7 @@ package com.kadirkertis.githubrepos.screens.home;
 
 
 import com.jakewharton.rxbinding2.support.v7.widget.SearchViewQueryTextEvent;
+import com.jakewharton.rxbinding2.widget.AbsListViewScrollEvent;
 import com.jakewharton.rxbinding2.widget.AdapterViewItemClickEvent;
 import com.jakewharton.rxbinding2.widget.TextViewTextChangeEvent;
 import com.kadirkertis.githubrepos.githubService.model.GithubRepo;
@@ -18,13 +19,18 @@ import io.reactivex.Observable;
 public interface MainView {
 
     Observable<TextViewTextChangeEvent> observeTextChange();
+
     Observable<AdapterViewItemClickEvent> observeUserClicked();
+
+    Observable<Object> observeSuggestionListEnd();
 
     void displayMessage(String msg);
 
     void displayLodingDialog(boolean loading);
 
     void displayUserSuggestion(List<User> userList);
+
+    void addToUserSuggestionList(List<User> userList);
 
     void displayReposList(List<GithubRepo> repos);
 

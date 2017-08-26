@@ -29,7 +29,7 @@ public class GithubRepositoryImpl implements GithubRepository {
     }
 
     @Override
-    public Observable<Users> getUsersWithName(String name) {
-        return githubApi.getUsers(name);
+    public Observable<Users> getUsersWithName(String name,int page, int perPage) {
+        return githubApi.getUsers(name,page,perPage);
     }
 }

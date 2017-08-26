@@ -14,7 +14,11 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.kadirkertis.githubrepos.R;import com.kadirkertis.githubrepos.githubService.model.User;
+import com.kadirkertis.githubrepos.R;
+import com.kadirkertis.githubrepos.app.Event;
+import com.kadirkertis.githubrepos.app.MyBus;
+import com.kadirkertis.githubrepos.githubService.model.User;
+import com.kadirkertis.githubrepos.utility.Constants;
 
 import java.util.Collection;
 import java.util.List;
@@ -54,6 +58,11 @@ public class UsersAdapter extends ArrayAdapter<User> implements Filterable {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
+        //Send Sıgnal if the end of the list reached
+        boolean endReached = position == userList.size() -1;
+        if(endReached){
+            MyBus.getInstance().post(Constants.Events.END_OF_LIST_REACHED_EVENT,userList.size());
+        }
         User user = getItem(position);
 
         assert user != null;
@@ -99,5 +108,13 @@ public class UsersAdapter extends ArrayAdapter<User> implements Filterable {
             }
         };
         return filter;
+    }
+
+    static class PageEndReached{
+        private int listSize;
+
+        public int getListSize() {
+            return listSize;
+        }
     }
 }
